@@ -8,8 +8,9 @@ import java.nio.channels.Selector;
 import java.nio.channels.ServerSocketChannel;
 import java.nio.channels.SocketChannel;
 import java.util.Set;
-
+import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.List;
 
 public class ChatServer {
 	private static final int PORT = 9091, BUFFER_SIZE = 256;
@@ -17,6 +18,8 @@ public class ChatServer {
 	protected Selector selector;
 	protected ServerSocketChannel serverChannel;
 	protected ByteBuffer buffer;
+	
+	protected List<SocketChannel> connectedClients;
 	
 	public ChatServer() {
 		try {
@@ -39,9 +42,12 @@ public class ChatServer {
 		}
 		
 		buffer = ByteBuffer.allocate(BUFFER_SIZE);	
+		connectedClients = new ArrayList<SocketChannel>();
 	}
 	
 	public void start() throws IOException {
+		System.out.println("Chat server listening on port " + PORT);
+		
 		while (true) {
 			selector.select();
 			Set<SelectionKey> selectedKeys = selector.selectedKeys();
@@ -56,29 +62,49 @@ public class ChatServer {
 				if(key.isReadable()) {
 					readMessage(key);
 				}
-				else 
-					if(key.isWritable()) {
-						
-					}			
 				
 			iter.remove();
 		}
 	}
 	
 	protected void readMessage(SelectionKey key) throws IOException {
-		SocketChannel clientChannel = (SocketChannel) key.channel();
-		clientChannel.read(buffer);
+		SocketChannel client = (SocketChannel) key.channel();
+		client.read(buffer);
+		System.out.println("client sent> " + buffer);
+		sendMessage(key);
+		
 	}
 	
+	protected void sendMessage(SelectionKey key) throws IOException {
+		System.out.println("server sending buffer");
+		SocketChannel client = (SocketChannel) key.channel();
+		buffer.flip();
+		
+		connectedClients.forEach(c->{
+			try {
+				c.write(buffer);
+				buffer.rewind();
+			} catch (IOException e) {
+				
+				e.printStackTrace();
+			}
+		});
+	//	client.write(buffer);
+	//	buffer.rewind();
+	//	client.write(buffer);
+		buffer.clear();
+	}
 	/**
 	 * Registers clientChannel for reading and writing
 	 * @throws IOException
 	 */
 	protected void registerServer() throws IOException {
-		SocketChannel clientChannel = serverChannel.accept();
-		clientChannel.configureBlocking(false);
-		clientChannel.register(selector, SelectionKey.OP_READ);
-		clientChannel.register(selector, SelectionKey.OP_WRITE);
+		SocketChannel client = serverChannel.accept();
+		client.configureBlocking(false);
+		client.register(selector, SelectionKey.OP_READ);
+		
+		connectedClients.add(client);
+		System.out.println("connected clients:" + connectedClients.size());
 	}
 
 }
