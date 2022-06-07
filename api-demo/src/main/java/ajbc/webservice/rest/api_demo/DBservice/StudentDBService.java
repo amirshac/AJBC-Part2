@@ -3,8 +3,10 @@ package ajbc.webservice.rest.api_demo.DBservice;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import ajbc.webservice.rest.api_demo.DB.MyDB;
+import ajbc.webservice.rest.api_demo.models.Course;
 import ajbc.webservice.rest.api_demo.models.Student;
 
 public class StudentDBService {
@@ -50,4 +52,14 @@ public class StudentDBService {
 	public Student deleteStudent(long id) {
 		return students.remove(id);
 	}
-}
+	
+	//get list of students with average >= {average}
+	public List<Student> getStudentsByAverage(double average){
+		return students.values().stream().filter(s -> s.getAverage() >= average).collect(Collectors.toList());
+	}
+	
+	// get courses of student
+	public List<Course> getCoursesByStudentId(long id){
+		return students.get(id).getCourses();
+	}
+	}
