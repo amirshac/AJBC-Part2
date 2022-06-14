@@ -1,4 +1,6 @@
-package dbservices;
+package models;
+
+import java.util.Objects;
 
 public class Employee {
 	
@@ -72,5 +74,28 @@ public class Employee {
 		return "Employee [id=" + id + ", lastName=" + lastName + ", firstName=" + firstName + ", email=" + email
 				+ ", department=" + department + ", salary=" + salary + "]";
 	}
+
+
+	@Override
+	public int hashCode() {
+		return Objects.hash(department, email, firstName, id, lastName, salary);
+	}
+
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		Employee other = (Employee) obj;
+		return Objects.equals(department, other.department) && Objects.equals(email, other.email)
+				&& Objects.equals(firstName, other.firstName) && id == other.id
+				&& Objects.equals(lastName, other.lastName)
+				&& Float.floatToIntBits(salary) == Float.floatToIntBits(other.salary);
+	}
+	
 	
 }

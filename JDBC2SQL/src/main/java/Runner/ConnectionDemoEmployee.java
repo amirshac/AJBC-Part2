@@ -3,8 +3,9 @@ import java.sql.Connection;
 import java.sql.SQLException;
 import DBConnection.DBConnection;
 import dbservices.*;
+import models.Employee;
 
-public class ConnectionDemo {
+public class ConnectionDemoEmployee {
 
 	static Connection connection = null;
 	static DBConnection dbConnection = null;
@@ -43,10 +44,27 @@ public class ConnectionDemo {
 		db.addEmployee(connection, e2);
 	}
 	
+	public static void testGetEmployee() {
+		Employee emp = db.getEmployee(connection, 1023);
+		System.out.println(emp);
+	}
+	
+	public static void testUpdateEmployee() {
+		Employee e1 = new Employee(1012, "Jason", "Burns", "jason@jason.com", "FBI", 9550);
+		db.updateEmployee(connection, e1);
+	}
+	
+	public static void testDeleteEmployee() {
+		db.deleteEmployee(connection, 1013);
+	}
+	
 	public static void main(String[] args) throws SQLException {
 		connectToDB();
 		
-		testAddEmployees();
+		//testAddEmployees();
+		//testGetEmployee();
+		//testUpdateEmployee();
+		//testDeleteEmployee();
 		
 		closeConnection();
 	}
