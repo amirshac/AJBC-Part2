@@ -115,7 +115,7 @@ public class ItemDBService {
 		return item;
 	}
 
-	public Item UpdateItem(Connection connection, Item item) {
+	public Item updateItem(Connection connection, Item item) {
 		if (item == null) return null;
 		
 		Item itemInDB = getItem(connection, item.getItemID());

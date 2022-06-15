@@ -6,8 +6,10 @@ import java.sql.SQLException;
 
 import DBConnection.DBConnection;
 import dbservices.ItemDBService;
+import dbservices.ItemLocationDBService;
 import dbservices.LocationDBService;
 import models.Item;
+import models.ItemLocation;
 import models.Location;
 
 public class Runner {
@@ -17,6 +19,7 @@ public class Runner {
 	private static Connection connection = null;
 	private static ItemDBService itemDB = new ItemDBService();
 	private static LocationDBService locationDB = new LocationDBService();
+	private static ItemLocationDBService ilDB = new ItemLocationDBService();
 	
 	
 	public static void connect() {
@@ -81,6 +84,11 @@ public class Runner {
 		System.out.println(location);
 	}
 	
+	public static void testGetItemLocation() {
+		ItemLocation il = ilDB.getItemLocation(connection, 1000, 2000);
+		System.out.println(il);
+	}
+	
 	public static void main(String[] args) throws SQLException {
 		
 		connect();
@@ -93,8 +101,9 @@ public class Runner {
 		//testGetLocation();
 		//testInsertLocation();
 		//testDeleteLocation();
-		testUpdateLocation();
+		//testUpdateLocation();
 		
+		testGetItemLocation();
 		
 		connection.close();
 	}
