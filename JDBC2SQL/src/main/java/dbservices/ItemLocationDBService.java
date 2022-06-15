@@ -88,6 +88,10 @@ public class ItemLocationDBService {
 		return il;
 	}
 	
+	public ItemLocation deleteItemLocation(Connection connection, int itemID, int locationID) {
+		return deleteItemLocation(connection, new ItemLocation(itemID, locationID));
+	}
+	
 	public ItemLocation updateItemLocation(Connection connection, ItemLocation itemLocation, ItemLocation toUpdate) {
 		if (itemLocation == null) return null;
 		
@@ -107,10 +111,10 @@ public class ItemLocationDBService {
 		int affectedRows = 0;
 
 		try (PreparedStatement statement = connection.prepareStatement(query)) {
-			statement.setInt(1, itemLocation.getItemID());
-			statement.setInt(2, itemLocation.getLocationID());
-			statement.setInt(3, toUpdate.getItemID());
-			statement.setInt(4, toUpdate.getLocationID());
+			statement.setInt(1, toUpdate.getItemID());
+			statement.setInt(2, toUpdate.getLocationID());
+			statement.setInt(3, itemLocation.getItemID());
+			statement.setInt(4, itemLocation.getLocationID());
 			
 			affectedRows = statement.executeUpdate();
 			
@@ -119,12 +123,16 @@ public class ItemLocationDBService {
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
+			return null;
 		}
 
 		itemInDB = getItemLocation(connection, toUpdate);
 		return itemInDB;
 	}
 	
+	public ItemLocation updateItemLocation(Connection connection, int itemID, int locationID, int updatedItemID, int updatedLocationID) {
+		return updateItemLocation(connection, new ItemLocation(itemID, locationID), new ItemLocation(updatedItemID, updatedLocationID));
+	}
 	
 	
 }

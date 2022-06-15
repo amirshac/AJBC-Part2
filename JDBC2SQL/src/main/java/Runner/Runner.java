@@ -55,7 +55,7 @@ public class Runner {
 	public static void testUpdateItem() {
 		Item item = itemDB.getItem(connection, 1003);
 		item.setName("PowerMagnets");
-		item = itemDB.UpdateItem(connection, item);
+		item = itemDB.updateItem(connection, item);
 		
 		System.out.println(item);		
 	}
@@ -85,7 +85,24 @@ public class Runner {
 	}
 	
 	public static void testGetItemLocation() {
-		ItemLocation il = ilDB.getItemLocation(connection, 1000, 2000);
+		ItemLocation il = ilDB.getItemLocation(connection, 1000, 1000);
+		System.out.println(il);
+	}
+	
+	public static void testInsertItemLocation() {
+		ItemLocation il = new ItemLocation(1000,1001);
+		ItemLocation newIL = ilDB.insertItemLocation(connection, il);
+		System.out.println(newIL);
+		
+	}
+	
+	public static void testDeleteItemLocation() {
+		ItemLocation il = ilDB.deleteItemLocation(connection, 1000, 1001);
+		System.out.println(il);
+	}
+	
+	public static void testUpdateItemLocation() {
+		ItemLocation il = ilDB.updateItemLocation(connection, 1000, 1000, 1000, 1001);
 		System.out.println(il);
 	}
 	
@@ -103,7 +120,10 @@ public class Runner {
 		//testDeleteLocation();
 		//testUpdateLocation();
 		
-		testGetItemLocation();
+		//testGetItemLocation();
+		//testInsertItemLocation();
+		//testDeleteItemLocation();
+		testUpdateItemLocation();
 		
 		connection.close();
 	}
