@@ -93,6 +93,11 @@ public class LocationDBService {
 		if (location  == null)
 			return null;
 
+		// step 1 - delete from itemlocation by location
+		ItemLocationDBService ilDB = new ItemLocationDBService();
+		ilDB.deleteAllByLocation(connection, locationID);
+		
+		// step 2 - delete location
 		String query = "delete from Location where LocationID = ?";
 		int affectedRows = 0;
 

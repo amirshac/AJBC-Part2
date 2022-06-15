@@ -134,5 +134,43 @@ public class ItemLocationDBService {
 		return updateItemLocation(connection, new ItemLocation(itemID, locationID), new ItemLocation(updatedItemID, updatedLocationID));
 	}
 	
+	public void deleteAllByItem(Connection connection, int itemID) {
+		// if we didn't find an item, we won't delete
+		
+		String query = "delete from ItemLocation where itemID = ?";
+		int affectedRows = 0;
+		
+
+		try (PreparedStatement statement = connection.prepareStatement(query)){
+			statement.setInt(1, itemID);
+
+			affectedRows = statement.executeUpdate();
+
+			System.out.println("itemlocation delete> affected rows " + affectedRows);
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}	
+	}
+	
+	public void deleteAllByLocation(Connection connection, int locationID) {
+		// if we didn't find an item, we won't delete
+		
+		String query = "delete from ItemLocation where locationID = ?";
+		int affectedRows = 0;
+		
+
+		try (PreparedStatement statement = connection.prepareStatement(query)){
+			statement.setInt(1, locationID);
+
+			affectedRows = statement.executeUpdate();
+
+			System.out.println("itemlocation delete> affected rows " + affectedRows);
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+	}
 	
 }

@@ -3,6 +3,8 @@ package Runner;
 
 import java.sql.Connection;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
 
 import DBConnection.DBConnection;
 import dbservices.ItemDBService;
@@ -27,6 +29,7 @@ public class Runner {
 		
 		try {
 			connection = db.connect();
+			connection.setAutoCommit(false);
 			System.out.println("connected to db");
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
@@ -48,7 +51,7 @@ public class Runner {
 	}
 	
 	public static void testDeleteItem() {
-		Item item = itemDB.deleteItem(connection, 1004);
+		Item item = itemDB.deleteItem(connection, 1002);
 		System.out.println("deleted " + item);
 	}
 	
@@ -61,7 +64,7 @@ public class Runner {
 	}
 	
 	public static void testGetLocation() {
-		Location location = locationDB.getLocation(connection, 1000);
+		Location location = locationDB.getLocation(connection, 1001);
 		System.out.println(location);	
 	}
 	
@@ -72,7 +75,7 @@ public class Runner {
 	}
 	
 	public static void testDeleteLocation() {
-		Location location = locationDB.deleteLocation(connection, 1004);
+		Location location = locationDB.deleteLocation(connection, 1001);
 		System.out.println(location);
 	}
 	
@@ -106,6 +109,18 @@ public class Runner {
 		System.out.println(il);
 	}
 	
+	public static void testInsertItemList() {
+		List<Item> itemList = new ArrayList<Item>();
+		itemList.add( new Item (10, "bissli", 20f, java.sql.Date.valueOf("2021-01-02") , 9));
+		itemList.add( new Item (30, "bamba", 30f, java.sql.Date.valueOf("2011-03-13") , 45));
+		itemList.add( new Item (40, "chocolate", 30f, java.sql.Date.valueOf("2010-03-3") , 32));
+		
+		List<Item> insertedItems = itemDB.insertItemList(connection, itemList);
+		
+		insertedItems.forEach(i->System.out.println(i));
+		
+	}
+	
 	public static void main(String[] args) throws SQLException {
 		
 		connect();
@@ -123,7 +138,9 @@ public class Runner {
 		//testGetItemLocation();
 		//testInsertItemLocation();
 		//testDeleteItemLocation();
-		testUpdateItemLocation();
+		//testUpdateItemLocation();
+		
+		testInsertItemList();
 		
 		connection.close();
 	}
