@@ -6,7 +6,9 @@ import java.sql.SQLException;
 
 import DBConnection.DBConnection;
 import dbservices.ItemDBService;
+import dbservices.LocationDBService;
 import models.Item;
+import models.Location;
 
 public class Runner {
 
@@ -14,6 +16,8 @@ public class Runner {
 	private static DBConnection db = null;
 	private static Connection connection = null;
 	private static ItemDBService itemDB = new ItemDBService();
+	private static LocationDBService locationDB = new LocationDBService();
+	
 	
 	public static void connect() {
 		db = new DBConnection(configFileName);
@@ -33,10 +37,10 @@ public class Runner {
 	}
 	
 	public static void testInsertItem() {
-		Item item = new Item(10, "Magnet", 9.5f, java.sql.Date.valueOf("2022-01-02") , 7);
-		itemDB.insertItem(connection, item);
+		Item item = new Item(10, "bissli", 20f, java.sql.Date.valueOf("2021-01-02") , 9);
+		Item newItem = itemDB.insertItem(connection, item);
 		
-		System.out.println(item);
+		System.out.println(newItem);
 		
 	}
 	
@@ -50,8 +54,31 @@ public class Runner {
 		item.setName("PowerMagnets");
 		item = itemDB.UpdateItem(connection, item);
 		
-		System.out.println(item);
-			
+		System.out.println(item);		
+	}
+	
+	public static void testGetLocation() {
+		Location location = locationDB.getLocation(connection, 1000);
+		System.out.println(location);	
+	}
+	
+	public static void testInsertLocation() {
+		Location location = new Location(10, "Ibiza", "IBI433");
+		Location newLocation = locationDB.insertLocation(connection, location);
+		System.out.println(newLocation);
+	}
+	
+	public static void testDeleteLocation() {
+		Location location = locationDB.deleteLocation(connection, 1004);
+		System.out.println(location);
+	}
+	
+	public static void testUpdateLocation() {
+		Location location = locationDB.getLocation(connection, 1003);
+		location.setAccessCode("boop332");
+		location = locationDB.UpdateLocation(connection, location);
+		
+		System.out.println(location);
 	}
 	
 	public static void main(String[] args) throws SQLException {
@@ -61,7 +88,13 @@ public class Runner {
 		//testGetItem();
 		//testInsertItem();
 		//testDeleteItem();
-		testUpdateItem();
+		//testUpdateItem();
+		
+		//testGetLocation();
+		//testInsertLocation();
+		//testDeleteLocation();
+		testUpdateLocation();
+		
 		
 		connection.close();
 	}

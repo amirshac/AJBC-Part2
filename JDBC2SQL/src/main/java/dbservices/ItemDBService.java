@@ -9,8 +9,27 @@ import models.Item;
 
 public class ItemDBService {
 
+	protected Item parseItemFromResultSet(ResultSet resultSet) {
+		Item item = null;
+		
+		try {
+			if (resultSet.next()) {
+				item = new Item();
+				item.setItemID(resultSet.getInt(1));
+				item.setName(resultSet.getString(2));
+				item.setUnitPrice(resultSet.getFloat(3));
+				item.setPurchaseDate(resultSet.getDate(4));
+				item.setQuantity(resultSet.getInt(5));
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+			item = null;
+		}
+		
+		return item;
+	}
+	
 	public Item getItem(Connection connection, int itemID) {
-
 		Item item = null;
 
 		ResultSet resultSet = null;
@@ -20,14 +39,7 @@ public class ItemDBService {
 
 			resultSet = statement.executeQuery();
 
-			if (resultSet.next()) {
-				item = new Item();
-				item.setItemID(resultSet.getInt(1));
-				item.setName(resultSet.getString(2));
-				item.setUnitPrice(resultSet.getFloat(3));
-				item.setPurchaseDate(resultSet.getDate(4));
-				item.setQuantity(resultSet.getInt(5));
-			}
+			item = parseItemFromResultSet(resultSet);
 
 		} catch (SQLException e) {
 			e.printStackTrace();
@@ -36,8 +48,28 @@ public class ItemDBService {
 
 		return item;
 	}
+	
+	public Item getLatestItem(Connection connection) {
+		Item item = null;
+		
+		ResultSet resultSet = null;
+		String query = "select TOP 1 * FROM Item ORDER BY ItemID DESC";
+		
+		try (PreparedStatement statement = connection.prepareStatement(query)){
+			
+			resultSet = statement.executeQuery();
+			
+			item = parseItemFromResultSet(resultSet);
+			
+		} catch (SQLException e) {
+			e.printStackTrace();
+			item = null;
+		}
+		
+		return item;
+	}
 
-	public void insertItem(Connection connection, Item item) {
+	public Item insertItem(Connection connection, Item item) {
 		String query = "Insert into Item Values(?, ?, ?, ?)";
 		int affectedRows = 0;
 
@@ -54,10 +86,13 @@ public class ItemDBService {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+		
+		Item itemInDB = getLatestItem(connection);
+		return itemInDB;
 	}
 
-	public Item deleteItem(Connection connection, int ItemID) {
-		Item item = getItem(connection, ItemID);
+	public Item deleteItem(Connection connection, int itemID) {
+		Item item = getItem(connection, itemID);
 
 		// if we didn't find an item, we won't delete
 		if (item == null)
@@ -67,7 +102,7 @@ public class ItemDBService {
 		int affectedRows = 0;
 
 		try (PreparedStatement statement = connection.prepareStatement(query)){
-			statement.setInt(1, ItemID);
+			statement.setInt(1, itemID);
 
 			affectedRows = statement.executeUpdate();
 
