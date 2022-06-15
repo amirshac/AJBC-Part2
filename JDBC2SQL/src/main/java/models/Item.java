@@ -1,6 +1,7 @@
 package models;
 
 import java.sql.Date;
+import java.util.Objects;
 
 public class Item {
 	protected int itemID;
@@ -11,11 +12,12 @@ public class Item {
 	
 	public Item() {}
 	
-	public Item(String name, float unitPrice, Date purchaseDate, int quantity) {
-		this.name = name;
-		this.purchaseDate = purchaseDate;
-		this.unitPrice = unitPrice;
-		this.quantity = quantity;
+	public Item(int itemID, String name, float unitPrice, Date purchaseDate, int quantity) {
+		setItemID(itemID);
+		setName(name);
+		setPurchaseDate(purchaseDate);
+		setUnitPrice(unitPrice);
+		setQuantity(quantity);
 	}
 	
 	public int getItemID() {
@@ -64,5 +66,23 @@ public class Item {
 				+ purchaseDate + ", quantity=" + quantity + "]";
 	}
 
+	@Override
+	public int hashCode() {
+		return Objects.hash(itemID, name, purchaseDate, quantity, unitPrice);
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		Item other = (Item) obj;
+		return itemID == other.itemID && Objects.equals(name, other.name)
+				&& Objects.equals(purchaseDate, other.purchaseDate) && quantity == other.quantity
+				&& Float.floatToIntBits(unitPrice) == Float.floatToIntBits(other.unitPrice);
+	}
 	
 }
