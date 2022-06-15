@@ -47,9 +47,11 @@ public class Runner {
 	
 	public static void testUpdateItem() {
 		Item item = itemDB.getItem(connection, 1003);
-		itemDB.UpdateItem(connection, item);
-			
+		item.setName("PowerMagnets");
+		item = itemDB.UpdateItem(connection, item);
+		
 		System.out.println(item);
+			
 	}
 	
 	public static void main(String[] args) throws SQLException {

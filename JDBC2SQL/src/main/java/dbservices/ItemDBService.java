@@ -80,17 +80,19 @@ public class ItemDBService {
 		return item;
 	}
 
-	public void UpdateItem(Connection connection, Item item) {
+	public Item UpdateItem(Connection connection, Item item) {
+		if (item == null) return null;
+		
 		Item itemInDB = getItem(connection, item.getItemID());
 
 		if (itemInDB == null) {
 			System.out.println("update> no item in DB");
-			return;
+			return null;
 		}
 
 		if (itemInDB.equals(item)) {
 			System.out.println("update> no need to update item - same item!");
-			return;
+			return null;
 		}
 
 		String query = "update Item set Name = ?, Unit_Price = ?, Purchase_Date = ?, Quantity = ? WHERE itemID = ?";
@@ -112,5 +114,8 @@ public class ItemDBService {
 			e.printStackTrace();
 		}
 
+		itemInDB = getItem(connection, item.getItemID());
+		return itemInDB;
 	}
+	
 }
