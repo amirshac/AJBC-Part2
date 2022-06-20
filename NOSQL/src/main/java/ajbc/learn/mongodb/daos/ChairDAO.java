@@ -29,6 +29,34 @@ public class ChairDAO {
 		gson = new Gson();
 	}
 	
+	protected List<Document> convertChairsToDocuments(List<Chair> chairs){
+		if (chairs == null) return null;
+		
+		List<Document> chairDocs = new ArrayList<Document>();
+		
+		chairs.forEach(chair -> {
+			String chairJson = gson.toJson(chair);
+			Document chairDoc = Document.parse(chairJson);
+			chairDocs.add(chairDoc);
+		});
+		
+		return chairDocs;
+	}
+	
+	protected List<Chair> convertDocumentsToChairs(List<Document> documents){
+		if (documents == null) return null;
+		
+		List<Chair> chairs = new ArrayList<Chair>();
+		
+		documents.forEach(doc ->{
+			String chairJson = doc.toJson();
+			Chair chair = gson.fromJson(chairJson, Chair.class);
+			chairs.add(chair);
+		});
+		
+		return chairs;
+	}
+	
 	public boolean insert(MongoDBConnection connection, Chair chair) {
 		MongoCollection<Document> collection = connection.getCollection();
 		
@@ -44,17 +72,18 @@ public class ChairDAO {
 	public boolean insertMany(MongoDBConnection connection, List<Chair> chairs) {
 		MongoCollection<Document> collection = connection.getCollection();
 		
-		List<Document> chairDocs = new ArrayList<Document>();
-		
-		chairs.forEach(chair -> {
-			String chairJson = gson.toJson(chair);
-			Document chairDoc = Document.parse(chairJson);
-			chairDocs.add(chairDoc);
-		});
+		List<Document> chairDocs = convertChairsToDocuments(chairs);
 		
 		InsertManyResult results = collection.insertMany(chairDocs);
 		
 		return results.wasAcknowledged();
+	}
+	
+	public List<Chair> find(MongoDBConnection connection, Bson filter) {
+		List<Document> chairDocs = connection.getCollection().find(filter).into(new ArrayList<>());
+		List<Chair> chairs = convertDocumentsToChairs(chairDocs);
+		
+		return chairs;
 	}
 	
 	public boolean delete(MongoDBConnection connection, Bson filter) {

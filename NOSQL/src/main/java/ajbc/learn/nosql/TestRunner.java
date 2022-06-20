@@ -24,9 +24,9 @@ public class TestRunner {
 	
 	public static void testInsertMany() {
 		List<Chair> chairs = new ArrayList<Chair>();
-		chairs.add(new Chair("OakLand", "o-103", true, 41.5f, new Measurement(10,20,30)));
-		chairs.add(new Chair("Chairdom", "o-99", true, 23.7f, new Measurement(40,10,40)));
-		chairs.add(new Chair("OakLand", "o-105", true, 42f, new Measurement(10,20,30)));
+		chairs.add(new Chair("OakLands", "o-103", true, 41.5f, new Measurement(10,20,30)));
+		chairs.add(new Chair("Chairdoms", "o-99", true, 23.7f, new Measurement(40,10,40)));
+		chairs.add(new Chair("OakLands", "o-105", true, 42f, new Measurement(10,20,30)));
 		
 		Boolean result = chairDAO.insertMany(connection, chairs);
 		System.out.println("insert many - " + result);
@@ -40,6 +40,13 @@ public class TestRunner {
 		System.out.println("delete - " + result);
 	}
 	
+	public static void testFind() {
+		Bson filter = Filters.eq("manufacturer", "Oaks");
+		List<Chair> chairs = chairDAO.find(connection, filter);
+		
+		System.out.println(chairs);
+	}
+	
 	public static void main(String[] args) {
 		connection = new MongoDBConnection();
 		chairDAO = new ChairDAO();
@@ -50,7 +57,9 @@ public class TestRunner {
 		
 		//testInsertMany();
 		
-		testDelete();
+		//testDelete();
+		
+		testFind();
 		
 		connection.close();
 	

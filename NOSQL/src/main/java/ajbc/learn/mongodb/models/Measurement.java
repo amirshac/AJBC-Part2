@@ -24,6 +24,7 @@ public class Measurement {
 	}
 	
 	public Measurement(double height, double width, double depth) {
+		this.id = ObjectId.get();
 		this.height = height;
 		this.width = width;
 		this.depth = depth;
