@@ -2,19 +2,22 @@ package ajbc.learn.mongodb.models;
 
 import java.util.List;
 
+import org.bson.codecs.pojo.annotations.BsonProperty;
 import org.bson.types.ObjectId;
 
 public class Student {
 
 	private ObjectId id;
 
+	@BsonProperty(value="student_id")
 	private int studentId;
-
+	@BsonProperty(value="first_name")
 	private String firstName;
-
+	@BsonProperty(value="last_name")
+	private String lastName;
+	@BsonProperty(value="class_id")
 	private int classId;
 
-	private String lastName;
 	private List<Exam> exams;
 
 	public Student(ObjectId id, int studentId, int classId, String firstName, String lastName, List<Exam> exams) {

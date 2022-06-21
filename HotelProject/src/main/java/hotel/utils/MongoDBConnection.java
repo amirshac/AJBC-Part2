@@ -1,4 +1,4 @@
-package ajbc.learn.nosql;
+package hotel.utils;
 
 import static org.bson.codecs.configuration.CodecRegistries.fromProviders;
 import static org.bson.codecs.configuration.CodecRegistries.fromRegistries;
@@ -77,6 +77,18 @@ public class MongoDBConnection {
 		} catch (Exception e) {
 			return null;
 		}
+		
+		return mongoClient;
+	}
+	
+	public MongoClient connect(String propsFileName, String dbName)  {
+
+		mongoClient = connect(propsFileName);
+		
+		if (mongoClient == null)
+			return null;
+		
+		database = mongoClient.getDatabase(dbName);
 		
 		return mongoClient;
 	}
