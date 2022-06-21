@@ -62,6 +62,7 @@ public class SeedDB {
 				new ObjectId("62b1ea86345a2860707718c7"),
 				new ObjectId("62b1ea86345a2860707718c8"),
 				new ObjectId("62b1ea86345a2860707718c9"));
+		ordersList = Arrays.asList(new ObjectId("62b1fd1a6238053d15580b20"));
 		
 		hotels.add(new Hotel(new ObjectId("62b1e395c5ae613f0133e12a"), "Hermoso Hotel", address, 5, roomList, 55f, ordersList));
 		
@@ -70,6 +71,7 @@ public class SeedDB {
 				new ObjectId("62b1ea86345a2860707718ca"),
 				new ObjectId("62b1ea86345a2860707718cb"),
 				new ObjectId("62b1ea86345a2860707718cc"));
+		ordersList = Arrays.asList(new ObjectId("62b1fd1a6238053d15580b21"));
 		
 		hotels.add(new Hotel(new ObjectId("62b1ea87345a2860707718cf"), "Lindo Hotel", address, 8, roomList, 90f, ordersList));
 		
@@ -78,6 +80,7 @@ public class SeedDB {
 		roomList = Arrays.asList(
 				new ObjectId("62b1ea86345a2860707718cd"),
 				new ObjectId("62b1ea86345a2860707718ce"));
+		ordersList = null;
 		
 		hotels.add(new Hotel(new ObjectId("62b1ea87345a2860707718d0"), "Bello Hotel", address, 10, roomList, 115f, ordersList));
 		
@@ -91,17 +94,21 @@ public class SeedDB {
 		customerCollection.drop();
 		
 		List<Customer> customers = new ArrayList<Customer>();
-		List<Integer> ordersList = new ArrayList<Integer>();
+		List<ObjectId> ordersList = new ArrayList<ObjectId>();
 		
+		ordersList = Arrays.asList(new ObjectId("62b1fd1a6238053d15580b20"));
 		customers.add(new Customer(new ObjectId("62b1ea87345a2860707718d1"), 1000, "Lea", "Chan", "UK", ordersList));
+		
+		ordersList = Arrays.asList(new ObjectId("62b1fd1a6238053d15580b21"));
 		customers.add(new Customer(new ObjectId("62b1ea87345a2860707718d2"), 1001, "Eden", "Mendez", "Spain", ordersList));
+		
+		ordersList = null;
 		customers.add(new Customer(new ObjectId("62b1ea87345a2860707718d3"), 1003, "Salim", "Ali", "Lebanon", ordersList));
 		customers.add(new Customer(new ObjectId("62b1ea87345a2860707718d4"), 1004, "Jose", "Tate", "US", ordersList));
 		customers.add(new Customer(new ObjectId("62b1ea87345a2860707718d5"), 1005, "Lorena", "Huff", "New Zealand", ordersList));
 		
 		InsertManyResult result = customerCollection.insertMany(customers);
 		System.out.println("Customer seed > " + result.wasAcknowledged());
-		
 	}
 	
 	public static void seedOrders(MongoDBConnection connection) {
@@ -113,14 +120,17 @@ public class SeedDB {
 		
 		ObjectId customerId;
 		ObjectId hotelId;
+		ObjectId orderId;
 		
+		orderId = new ObjectId("62b1fd1a6238053d15580b20");
 		customerId = new ObjectId("62b1e395c5ae613f0133e12a");
 		hotelId = new ObjectId("62b1e395c5ae613f0133e12a");
-		orders.add(new Order( customerId, hotelId, LocalDate.now(), LocalDate.of(2022, 9, 1), 5, 2000 ));
+		orders.add(new Order( orderId, hotelId, customerId, LocalDate.now(), LocalDate.of(2022, 9, 1), 5, 2000 ));
 		
+		orderId = new ObjectId("62b1fd1a6238053d15580b21");
 		customerId = new ObjectId("62b1ea87345a2860707718d2");
 		hotelId = new ObjectId("62b1ea87345a2860707718cf");
-		orders.add(new Order( customerId, hotelId, LocalDate.now(), LocalDate.of(2022, 9, 15), 5, 2000 ));
+		orders.add(new Order( orderId, hotelId, customerId, LocalDate.now(), LocalDate.of(2022, 9, 15), 5, 2000 ));
 		
 		InsertManyResult result = orderCollection.insertMany(orders);
 		System.out.println("Orders seed > " + result.wasAcknowledged());

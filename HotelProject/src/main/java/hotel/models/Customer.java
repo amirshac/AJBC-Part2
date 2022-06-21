@@ -15,10 +15,10 @@ public class Customer {
 	@BsonProperty(value = "last_name")
 	protected String lastName;
 	protected String country;
-	protected List<Integer> orders;
+	protected List<ObjectId> orders;
 	
 	public Customer(ObjectId id, int customerId, String firstName, String lastName, String country,
-			List<Integer> orders) {
+			List<ObjectId> orders) {
 		this.id = id;
 		this.customerId = customerId;
 		this.firstName = firstName;
@@ -28,7 +28,7 @@ public class Customer {
 	}
 	
 	public Customer(int customerId, String firstName, String lastName, String country,
-			List<Integer> orders) {
+			List<ObjectId> orders) {
 		this.id = new ObjectId();
 		this.customerId = customerId;
 		this.firstName = firstName;
@@ -79,11 +79,11 @@ public class Customer {
 		this.country = country;
 	}
 
-	public List<Integer> getOrders() {
+	public List<ObjectId> getOrders() {
 		return orders;
 	}
 
-	public void setOrders(List<Integer> orders) {
+	public void setOrders(List<ObjectId> orders) {
 		this.orders = orders;
 	}
 
