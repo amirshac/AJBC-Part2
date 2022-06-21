@@ -8,9 +8,9 @@ import org.bson.types.ObjectId;
 public class Order {
 	private ObjectId id;
 	@BsonProperty(value = "hotel_id")
-	private int hotelId;
+	private ObjectId hotelId;
 	@BsonProperty(value = "customer_id")
-	private int customerId;
+	private ObjectId customerId;
 	@BsonProperty(value = "order_date")
 	private LocalDate orderDate;
 	@BsonProperty(value = "start_date")
@@ -19,7 +19,7 @@ public class Order {
 	@BsonProperty(value = "total_price")
 	private float totalPrice;
 	
-	public Order(ObjectId id, int hotelId, int customerId, LocalDate orderDate, LocalDate startDate,
+	public Order(ObjectId id, ObjectId hotelId, ObjectId customerId, LocalDate orderDate, LocalDate startDate,
 			int nights, float totalPrice) {
 		this.id = id;
 		this.hotelId = hotelId;
@@ -30,7 +30,7 @@ public class Order {
 		this.totalPrice = totalPrice;
 	}
 	
-	public Order(int hotelId, int customerId, LocalDate orderDate, LocalDate startDate,
+	public Order(ObjectId hotelId, ObjectId customerId, LocalDate orderDate, LocalDate startDate,
 			int nights, float totalPrice) {
 		this.id = new ObjectId();
 		this.hotelId = hotelId;
@@ -49,16 +49,16 @@ public class Order {
 	public void setId(ObjectId id) {
 		this.id = id;
 	}
-	public int getHotelId() {
+	public ObjectId getHotelId() {
 		return hotelId;
 	}
-	public void setHotelId(int hotelId) {
+	public void setHotelId(ObjectId hotelId) {
 		this.hotelId = hotelId;
 	}
-	public int getCustomerId() {
+	public ObjectId getCustomerId() {
 		return customerId;
 	}
-	public void setCustomerId(int customerId) {
+	public void setCustomerId(ObjectId customerId) {
 		this.customerId = customerId;
 	}
 	public LocalDate getOrderDate() {

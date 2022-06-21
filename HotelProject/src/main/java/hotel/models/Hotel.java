@@ -7,20 +7,17 @@ import org.bson.types.ObjectId;
 
 public class Hotel {
 	protected ObjectId id;
-	@BsonProperty(value = "hotel_id")
-	protected int hotelId;
 	protected String name;
 	protected Address address;
 	protected int rank;
-	protected List<Integer> rooms;
+	protected List<ObjectId> rooms;
 	@BsonProperty(value = "price_per_night")
 	protected float pricePerNight;
-	protected List<Integer> orders;
+	protected List<ObjectId> orders;
 	
-	public Hotel(ObjectId id, int hotelId, String name, Address address, int rank, List<Integer> rooms,
-		float pricePerNight, List<Integer> orders) {
+	public Hotel(ObjectId id, String name, Address address, int rank, List<ObjectId> rooms,
+		float pricePerNight, List<ObjectId> orders) {
 		this.id = id;
-		this.hotelId = hotelId;
 		this.name = name;
 		this.address = address;
 		this.rank = rank;
@@ -29,10 +26,9 @@ public class Hotel {
 		this.orders = orders;
 	}
 	
-	public Hotel(int hotelId, String name, Address address, int rank, List<Integer> rooms,
-			float pricePerNight, List<Integer> orders) {
+	public Hotel(String name, Address address, int rank, List<ObjectId> rooms,
+			float pricePerNight, List<ObjectId> orders) {
 			this.id = new ObjectId();
-			this.hotelId = hotelId;
 			this.name = name;
 			this.address = address;
 			this.rank = rank;
@@ -40,6 +36,8 @@ public class Hotel {
 			this.pricePerNight = pricePerNight;
 			this.orders = orders;
 		}
+	
+	public Hotel() {}
 
 	public ObjectId getId() {
 		return id;
@@ -47,14 +45,6 @@ public class Hotel {
 
 	public void setId(ObjectId id) {
 		this.id = id;
-	}
-
-	public int getHotelId() {
-		return hotelId;
-	}
-
-	public void setHotelId(int hotelId) {
-		this.hotelId = hotelId;
 	}
 
 	public String getName() {
@@ -81,11 +71,11 @@ public class Hotel {
 		this.rank = rank;
 	}
 
-	public List<Integer> getRooms() {
+	public List<ObjectId> getRooms() {
 		return rooms;
 	}
 
-	public void setRooms(List<Integer> rooms) {
+	public void setRooms(List<ObjectId> rooms) {
 		this.rooms = rooms;
 	}
 
@@ -97,17 +87,17 @@ public class Hotel {
 		this.pricePerNight = pricePerNight;
 	}
 
-	public List<Integer> getOrders() {
+	public List<ObjectId> getOrders() {
 		return orders;
 	}
 
-	public void setOrders(List<Integer> orders) {
+	public void setOrders(List<ObjectId> orders) {
 		this.orders = orders;
 	}
 
 	@Override
 	public String toString() {
-		return "Hotel [id=" + id + ", hotelId=" + hotelId + ", name=" + name + ", address=" + address + ", rank=" + rank
+		return "Hotel [id=" + id + ", name=" + name + ", address=" + address + ", rank=" + rank
 				+ ", rooms=" + rooms + ", pricePerNight=" + pricePerNight + ", orders=" + orders + "]";
 	}
 	

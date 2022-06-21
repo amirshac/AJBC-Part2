@@ -6,9 +6,7 @@ import org.bson.types.ObjectId;
 public class Room {
 	protected ObjectId id;
 	@BsonProperty(value = "hotel_id")
-	protected int hotelId;
-	@BsonProperty(value = "room_id")
-	protected int roomId;
+	protected ObjectId hotelId;
 	@BsonProperty(value = "number")
 	protected int number;
 	@BsonProperty(value = "has_bath")
@@ -16,19 +14,17 @@ public class Room {
 	@BsonProperty(value = "max_occupants")
 	protected int maxOccupants;
 	
-	public Room(ObjectId id, int hotelId, int roomId, int number, boolean hasBath, int maxOccupants) {
+	public Room(ObjectId id, ObjectId hotelId, int number, boolean hasBath, int maxOccupants) {
 		this.id = id;
 		this.hotelId = hotelId;
-		this.roomId = roomId;
 		this.number = number;
 		this.hasBath = hasBath;
 		this.maxOccupants = maxOccupants;
 	}
 	
-	public Room(int hotelId, int roomId, int number, boolean hasBath, int maxOccupants) {
+	public Room(ObjectId hotelId, int number, boolean hasBath, int maxOccupants) {
 		this.id = new ObjectId();
 		this.hotelId = hotelId;
-		this.roomId = roomId;
 		this.number = number;
 		this.hasBath = hasBath;
 		this.maxOccupants = maxOccupants;
@@ -44,20 +40,12 @@ public class Room {
 		this.id = id;
 	}
 
-	public int getHotelId() {
+	public ObjectId getHotelId() {
 		return hotelId;
 	}
 
-	public void setHotelId(int hotelId) {
+	public void setHotelId(ObjectId hotelId) {
 		this.hotelId = hotelId;
-	}
-
-	public int getRoomId() {
-		return roomId;
-	}
-
-	public void setRoomId(int roomId) {
-		this.roomId = roomId;
 	}
 
 	public int getNumber() {
@@ -86,7 +74,7 @@ public class Room {
 
 	@Override
 	public String toString() {
-		return "Room [id=" + id + ", hotelId=" + hotelId + ", roomId=" + roomId + ", number=" + number + ", hasBath="
+		return "Room [id=" + id + ", hotelId=" + hotelId + ", number=" + number + ", hasBath="
 				+ hasBath + ", maxOccupants=" + maxOccupants + "]";
 	}
 	
