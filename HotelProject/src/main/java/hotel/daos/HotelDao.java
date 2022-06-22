@@ -7,10 +7,15 @@ import java.util.List;
 
 import org.bson.Document;
 import org.bson.conversions.Bson;
+import org.bson.json.JsonWriterSettings;
 import org.bson.types.ObjectId;
 
 import com.mongodb.client.MongoCollection;
+import com.mongodb.client.model.Accumulators;
+import com.mongodb.client.model.Aggregates;
 import com.mongodb.client.model.Filters;
+import com.mongodb.client.model.Projections;
+import com.mongodb.client.model.Sorts;
 import com.mongodb.client.model.Updates;
 import com.mongodb.client.result.UpdateResult;
 
@@ -28,10 +33,12 @@ public class HotelDao {
 	
 	protected MongoDBConnection connection;
 	protected MongoCollection<Hotel> hotelCollection;
+	protected MongoCollection<Document> hotelDocumentCollection;
 		
 	public HotelDao(MongoDBConnection connection) {
 		this.connection = connection;
 		hotelCollection = connection.getDataBase().getCollection("hotel", Hotel.class);
+		hotelDocumentCollection = connection.getDataBase().getCollection("hotel");
 	}
 	
 	public Hotel findByCityName(String cityName) {
@@ -94,4 +101,5 @@ public class HotelDao {
 		
 		return result.wasAcknowledged();
 	}
+	
 }

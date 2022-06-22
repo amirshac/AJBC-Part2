@@ -14,8 +14,6 @@ import hotel.utils.DateUtil;
 import hotel.utils.MongoDBConnection;
 import hotel.utils.SeedDB;
 
-
-
 public class Runner {
 	static MongoDBConnection connection;
 	static HotelDao hotelDao;
@@ -91,6 +89,17 @@ public class Runner {
 			System.out.println("order not found");
 	}
 	
+	public static void testSortHotelsByTotalIncomeFromOrders() {
+		System.out.println("Sorting hotels by total income from orders");
+		orderDao.sortHotelsByTotalIncomeFromOrders();
+		System.out.println("--------------------------------------------");
+	}
+	
+	public static void testTotalPricesInOrders() {
+		System.out.println("Total sum from all orders:");
+		orderDao.totalPricesInOrders();
+		System.out.println("--------------------------------------------");
+	}
 
 	public static void main(String[] args) {
 		connection.connect("nosql.properties", "hotel_db");
@@ -110,8 +119,10 @@ public class Runner {
 		//testHasAvailableRoom();
 
 		//testCreateOrder();
-		testCancelOrder();
+		//testCancelOrder();
 		
+		testSortHotelsByTotalIncomeFromOrders();
+		testTotalPricesInOrders();
 		connection.close();
 	}
 }

@@ -1,17 +1,23 @@
 package hotel.daos;
 
 import static com.mongodb.client.model.Aggregates.match;
+import static com.mongodb.client.model.Aggregates.sort;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import org.bson.Document;
 import org.bson.conversions.Bson;
+import org.bson.json.JsonWriterSettings;
 import org.bson.types.ObjectId;
 
 import com.mongodb.client.MongoCollection;
+import com.mongodb.client.model.Accumulators;
+import com.mongodb.client.model.Aggregates;
 import com.mongodb.client.model.Filters;
+import com.mongodb.client.model.Sorts;
 import com.mongodb.client.result.InsertOneResult;
 
 import hotel.models.Customer;
@@ -24,23 +30,30 @@ public class OrderDao {
 	
 protected MongoDBConnection connection;
 protected MongoCollection<Order> orderCollection;
+protected MongoCollection<Document> orderDocumentCollection;
 
 	public OrderDao(MongoDBConnection connection) {
 		this.connection = connection;
 		orderCollection = connection.getDataBase().getCollection("order", Order.class);
-	}
-	
-	public Order findOrderById(String orderIdString) {
-		Bson filter = Filters.eq("_id", new ObjectId(orderIdString));
-		
-		Order order = orderCollection.find(filter).first();
-		return order;
+		orderDocumentCollection = connection.getDataBase().getCollection("order");
 	}
 	
 	public Order findOrderById(ObjectId id) {
-		return findOrderById(id.toString());
+		return orderCollection.find(Filters.eq("_id", id)).first();
 	}
 	
+	public Order findOrderById(String orderIdString) {
+		return findOrderById(new ObjectId(orderIdString));
+	}
+	
+	
+	/**
+	 * Checks if there's orders under a specific room that overlaps a date range
+	 * @param id
+	 * @param startDate
+	 * @param endDate
+	 * @return List of overlapping orders or NULL if no orders were found
+	 */
 	public List<Order> findOrdersByRoomInDateRange(ObjectId id, LocalDate startDate, LocalDate endDate) {
 		Bson roomFilter = Filters.eq("room_id", id);
 		Bson datefilter1 = Filters.and(Filters.lte("start_date", startDate), Filters.gte("end_date", endDate));
@@ -126,5 +139,24 @@ protected MongoCollection<Order> orderCollection;
 		customerDao.removeOrderFromCustomer(order.getCustomerId(), orderId);
 		
 		return order;
+	}
+	
+	public void sortHotelsByTotalIncomeFromOrders() {		
+		List<Document> result = null;
+		Bson group = Aggregates.group("$hotel_id", Accumulators.sum("totalPrice", "$total_price"));
+		Bson sort = sort(Sorts.descending("totalPrice"));
+		
+		result = orderDocumentCollection.aggregate(Arrays.asList(group, sort)).into(new ArrayList<>()); 
+		
+		result.forEach(doc -> System.out.println(doc.toJson(JsonWriterSettings.builder().indent(true).build())));
+	}
+	
+	public void totalPricesInOrders() {
+		List<Document> result = null;
+		Bson group = Aggregates.group(null, Accumulators.sum("totalSumFromOrders", "$total_price"));
+		result = orderDocumentCollection.aggregate(Arrays.asList(group)).into(new ArrayList<>());
+		
+		result.forEach(doc -> System.out.println(doc.toJson(JsonWriterSettings.builder().indent(true).build())));
+
 	}
 }
