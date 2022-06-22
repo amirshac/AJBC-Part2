@@ -40,7 +40,9 @@ public class Runner {
 	
 	public static void testHasAvailableRoom() {
 		HotelDao hotelDao = new HotelDao(connection);
-		hotelDao.hasAvailableRoomAt("62b1e395c5ae613f0133e12a", LocalDate.of(2022, 10, 10));
+		Boolean result = hotelDao.hasAvailableRoomAt(new ObjectId("62b1e395c5ae613f0133e12a"), LocalDate.of(2022, 10, 10));
+		System.out.println("has available room " + result);
+
 	}
 	
 	public static void testHasOrdersByRoom() {
@@ -52,9 +54,24 @@ public class Runner {
 	
 	public static void testAvailableRoomsByHotelAtDateRange() {
 		HotelDao hotelDao = new HotelDao(connection);
-		List<ObjectId> result = hotelDao.availableRoomsByHotelAtDateRange(new ObjectId("62b1e395c5ae613f0133e12a"),LocalDate.of(2022, 9, 1), LocalDate.of(2022, 9, 6));
+		List<ObjectId> result = hotelDao.availableRoomsByHotelAtDateRange
+				(new ObjectId("62b1e395c5ae613f0133e12a"),LocalDate.of(2022, 9, 1), LocalDate.of(2022, 9, 6));
 		System.out.println(result);
 		
+	}
+	
+	public static void testCreateOrder() {
+		OrderDao orderDao = new OrderDao(connection);
+		
+		ObjectId hotelId = new ObjectId("62b1e395c5ae613f0133e12a");
+		ObjectId customerId = new ObjectId("62b1ea87345a2860707718d1");
+		LocalDate startDate = LocalDate.of(2022, 10, 10);
+		int nights = 5;
+
+		Order order = orderDao.createOrderForHotel(hotelId, customerId, startDate, nights);
+		
+		System.out.println("---create order---");
+		System.out.println(order);
 	}
 	
 	public static void main(String[] args) {
@@ -66,11 +83,13 @@ public class Runner {
 		
 		//testFindHotelByCityName();
 		//testFindOrdersOfCustomer();
-		//testHasAvailableRoom();
 		
 		//testHasOrdersByRoom();
 		
-		testAvailableRoomsByHotelAtDateRange();
+		//testAvailableRoomsByHotelAtDateRange();
+		//testHasAvailableRoom();
+
+		testCreateOrder();
 		
 		connection.close();
 	}

@@ -101,4 +101,13 @@ public class Hotel {
 				+ ", rooms=" + rooms + ", pricePerNight=" + pricePerNight + ", orders=" + orders + "]";
 	}
 	
+	public void addOrder(ObjectId orderId) {
+		orders.add(orderId);
+	}
+	
+	public void removeOrder(ObjectId orderId) {
+		if (orders.contains(orderId)){
+			orders.remove(orderId);
+		}
+	}
 }

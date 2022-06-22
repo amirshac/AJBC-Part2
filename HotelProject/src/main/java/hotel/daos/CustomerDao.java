@@ -8,6 +8,8 @@ import org.bson.types.ObjectId;
 
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.model.Filters;
+import com.mongodb.client.model.Updates;
+import com.mongodb.client.result.UpdateResult;
 
 import hotel.models.Customer;
 import hotel.models.Order;
@@ -15,9 +17,11 @@ import hotel.utils.MongoDBConnection;
 
 public class CustomerDao {
 	protected MongoDBConnection connection;
+	protected MongoCollection<Customer> customerCollection;
 	
 	public CustomerDao(MongoDBConnection connection) {
 		this.connection = connection;
+		customerCollection = connection.getDataBase().getCollection("customer", Customer.class);
 	}
 	
 	public Customer findCustomerById(String customerIdString) {
@@ -25,7 +29,6 @@ public class CustomerDao {
 	}
 	
 	public Customer findCustomerById(ObjectId customerId) {
-		MongoCollection<Customer> customerCollection = connection.getDataBase().getCollection("customer", Customer.class);
 		Bson filter = Filters.eq("_id", customerId);
 
 		Customer customer = customerCollection.find(filter).first();
@@ -47,5 +50,13 @@ public class CustomerDao {
 		}
 		
 		return orders;
+	}
+	
+	public boolean addOrderToCustomer(ObjectId customerId, ObjectId orderId) {
+		Bson filter = Filters.eq("_id", customerId);
+		Bson update = Updates.addToSet("orders", orderId);
+		UpdateResult result = customerCollection.updateOne(filter, update);
+		
+		return result.wasAcknowledged();
 	}
 }

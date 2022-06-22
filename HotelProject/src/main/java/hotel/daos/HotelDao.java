@@ -11,6 +11,8 @@ import org.bson.types.ObjectId;
 
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.model.Filters;
+import com.mongodb.client.model.Updates;
+import com.mongodb.client.result.UpdateResult;
 
 import hotel.models.Customer;
 import hotel.models.Hotel;
@@ -33,16 +35,11 @@ public class HotelDao {
 	}
 	
 	public Hotel findByCityName(String cityName) {
-		MongoCollection<Hotel> hotelCollection = connection.getDataBase().getCollection("hotel", Hotel.class);
-		Bson filter = Filters.eq("address.city", cityName);
-		Hotel hotel = hotelCollection.find(filter).first();
-		return hotel;
+		return hotelCollection.find(Filters.eq("address.city", cityName)).first(); 
 	}
 	
 	public Hotel findHotelById(ObjectId id) {
-		Bson filter = Filters.eq("_id", id);
-		Hotel hotel = hotelCollection.find(filter).first();
-		return hotel;
+		return hotelCollection.find(Filters.eq("_id", id)).first();
 	}
 	
 	public boolean hasAvailableRoomAt(ObjectId hotelId, LocalDate date) {
@@ -55,6 +52,13 @@ public class HotelDao {
 		return !(availableRooms.isEmpty());		
 	}
 	
+	/**
+	 * Returns hotel's available rooms ids in date range
+	 * @param hotelId
+	 * @param startDate
+	 * @param endDate
+	 * @return list of available rooms Ids
+	 */
 	public List<ObjectId> availableRoomsByHotelAtDateRange(ObjectId hotelId, LocalDate startDate, LocalDate endDate){
 		List<ObjectId> availableRooms = new ArrayList<ObjectId>();
 		
@@ -67,10 +71,7 @@ public class HotelDao {
 		// - if theres no orders, the room is available
 		for (ObjectId roomId : roomIds) {
 			List<Order> orders = orderDao.findOrdersByRoomInDateRange(roomId, startDate, endDate);
-			//System.out.println(orders);
-			//System.out.println(orders.isEmpty());
 			if (orders.isEmpty()) {
-				//System.out.println("adding " + roomId);
 				availableRooms.add(roomId);
 			}
 			orders = null;
@@ -78,9 +79,11 @@ public class HotelDao {
 		return availableRooms;
 	}
 	
-	public void hasAvailableRoomAt(String hotelIdString, LocalDate date) {
-		//return 
-				hasAvailableRoomAt(new ObjectId(hotelIdString), date);
+	public boolean addOrderToHotel(ObjectId hotelId, ObjectId orderId) {
+		Bson filter = Filters.eq("_id", hotelId);
+		Bson update = Updates.addToSet("orders", orderId);
+		UpdateResult result = hotelCollection.updateOne(filter, update);
+		
+		return result.wasAcknowledged();
 	}
-	
 }
