@@ -10,7 +10,6 @@ import hotel.daos.HotelDao;
 import hotel.daos.OrderDao;
 import hotel.models.Hotel;
 import hotel.models.Order;
-import hotel.utils.DateUtil;
 import hotel.utils.MongoDBConnection;
 import hotel.utils.SeedDB;
 
@@ -96,15 +95,17 @@ public class Runner {
 			System.out.println("order not found");
 	}
 	
-	public static void testSortHotelsByTotalIncomeFromOrders() {
+	// Question 6
+	public static void showSortHotelsByTotalIncomeFromOrders() {
 		System.out.println("Sorting hotels by total income from orders");
 		orderDao.sortHotelsByTotalIncomeFromOrders();
 		System.out.println("--------------------------------------------");
 	}
 	
-	public static void testTotalPricesInOrders() {
-		System.out.println("Total sum from all orders:");
-		orderDao.totalPricesInOrders();
+	// Question 7
+	public static void showTotalIncomeFromOrders() {
+		System.out.println("Total Income from all orders:");
+		orderDao.totalIncomeFromOrders();
 		System.out.println("--------------------------------------------");
 	}
 
@@ -132,9 +133,12 @@ public class Runner {
 		// Question 5
 		//showCancelOrder();
 		
+		// Question 6
+		showSortHotelsByTotalIncomeFromOrders();
 		
-		//testSortHotelsByTotalIncomeFromOrders();
-		//testTotalPricesInOrders();
+		// Question 7
+		showTotalIncomeFromOrders();
+		
 		connection.close();
 	}
 }

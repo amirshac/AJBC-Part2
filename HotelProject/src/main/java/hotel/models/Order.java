@@ -34,7 +34,7 @@ public class Order {
 		this.startDate = startDate;
 		this.nights = nights;
 		this.totalPrice = totalPrice;
-		this.endDate = DateUtil.calculateEndDate(startDate, nights);
+		this.endDate = startDate.plusDays(nights);
 	}
 
 	public Order(ObjectId hotelId, ObjectId roomId, ObjectId customerId, LocalDate orderDate, LocalDate startDate, int nights,
@@ -47,7 +47,7 @@ public class Order {
 		this.startDate = startDate;
 		this.nights = nights;
 		this.totalPrice = totalPrice;
-		this.endDate = DateUtil.calculateEndDate(startDate, nights);
+		this.endDate = startDate.plusDays(nights);
 	}
 
 	public Order() {
@@ -105,7 +105,7 @@ public class Order {
 		return endDate;
 	}
 
-	public void setEndDate(LocalDate startDate) {
+	public void setEndDate(LocalDate endDate) {
 		this.endDate = endDate;
 	}
 

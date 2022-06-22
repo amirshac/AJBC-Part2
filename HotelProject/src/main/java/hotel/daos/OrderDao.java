@@ -1,7 +1,7 @@
 package hotel.daos;
 
-import static com.mongodb.client.model.Aggregates.match;
-import static com.mongodb.client.model.Aggregates.sort;
+import static com.mongodb.client.model.Aggregates.*;
+import static com.mongodb.client.model.Projections.*;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -150,20 +150,21 @@ public class OrderDao {
 
 	public void sortHotelsByTotalIncomeFromOrders() {
 		List<Document> result = null;
-		Bson group = Aggregates.group("$hotel_id", Accumulators.sum("totalPrice", "$total_price"));
+		Bson group = Aggregates.group("$hotel_id", Accumulators.sum("hotel_income", "$total_price"));
 		Bson sort = sort(Sorts.descending("totalPrice"));
+		Bson project = project(fields(excludeId(), include("hotel_income"),computed("hotel_id", "$_id")));
 
-		result = orderDocumentCollection.aggregate(Arrays.asList(group, sort)).into(new ArrayList<>());
+		result = orderDocumentCollection.aggregate(Arrays.asList(group, sort, project)).into(new ArrayList<>());
 
 		result.forEach(doc -> System.out.println(doc.toJson(JsonWriterSettings.builder().indent(true).build())));
 	}
 
-	public void totalPricesInOrders() {
+	public void totalIncomeFromOrders() {
 		List<Document> result = null;
-		Bson group = Aggregates.group(null, Accumulators.sum("totalSumFromOrders", "$total_price"));
-		result = orderDocumentCollection.aggregate(Arrays.asList(group)).into(new ArrayList<>());
-
+		Bson group = Aggregates.group(null, Accumulators.sum("total_income_from_orders", "$total_price"));
+		Bson project = project(fields(excludeId(), include("total_income_from_orders")));
+		result = orderDocumentCollection.aggregate(Arrays.asList(group, project)).into(new ArrayList<>());
+	
 		result.forEach(doc -> System.out.println(doc.toJson(JsonWriterSettings.builder().indent(true).build())));
-
 	}
 }
