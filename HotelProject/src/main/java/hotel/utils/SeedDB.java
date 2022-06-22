@@ -121,16 +121,19 @@ public class SeedDB {
 		ObjectId customerId;
 		ObjectId hotelId;
 		ObjectId orderId;
+		ObjectId roomId = null;
 		
 		orderId = new ObjectId("62b1fd1a6238053d15580b20");
 		customerId = new ObjectId("62b1e395c5ae613f0133e12a");
 		hotelId = new ObjectId("62b1e395c5ae613f0133e12a");
-		orders.add(new Order( orderId, hotelId, customerId, LocalDate.now(), LocalDate.of(2022, 9, 1), 5, 2000 ));
+		roomId = new ObjectId("62b1ea86345a2860707718c6");
+		orders.add(new Order( orderId, hotelId, roomId, customerId, LocalDate.now(), LocalDate.of(2022, 9, 1), 5, 2000 ));
 		
 		orderId = new ObjectId("62b1fd1a6238053d15580b21");
 		customerId = new ObjectId("62b1ea87345a2860707718d2");
 		hotelId = new ObjectId("62b1ea87345a2860707718cf");
-		orders.add(new Order( orderId, hotelId, customerId, LocalDate.now(), LocalDate.of(2022, 9, 15), 5, 2000 ));
+		roomId = new ObjectId("62b1ea86345a2860707718ca");
+		orders.add(new Order( orderId, hotelId, roomId, customerId, LocalDate.now(), LocalDate.of(2022, 9, 15), 5, 2000 ));
 		
 		InsertManyResult result = orderCollection.insertMany(orders);
 		System.out.println("Orders seed > " + result.wasAcknowledged());
