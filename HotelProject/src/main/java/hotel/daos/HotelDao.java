@@ -86,4 +86,12 @@ public class HotelDao {
 		
 		return result.wasAcknowledged();
 	}
+	
+	public boolean removeOrderFromHotel(ObjectId hotelId, ObjectId orderId) {
+		Bson filter = Filters.eq("_id", hotelId);
+		Bson update = Updates.pull("orders", orderId);
+		UpdateResult result = hotelCollection.updateOne(filter, update);
+		
+		return result.wasAcknowledged();
+	}
 }

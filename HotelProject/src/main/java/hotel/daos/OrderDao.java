@@ -57,6 +57,14 @@ protected MongoCollection<Order> orderCollection;
 		return findOrdersByRoomInDateRange(new ObjectId(id), startDate, endDate);
 	}
 
+	/**
+	 * Create new order for hotel and updates relevant database collections
+	 * @param hotelId
+	 * @param customerId
+	 * @param startDate
+	 * @param nights
+	 * @return created order or NULL in case there was no free room in hotel
+	 */
 	public Order createOrderForHotel(ObjectId hotelId, ObjectId customerId, LocalDate startDate, int nights) {
 		CustomerDao customerDao = new CustomerDao(connection);
 		HotelDao hotelDao = new HotelDao(connection);
@@ -73,6 +81,7 @@ protected MongoCollection<Order> orderCollection;
 		// get available room ids
 		List<ObjectId> availableRoomIds = hotelDao.availableRoomsByHotelAtDateRange(hotelId, startDate, endDate);
 		
+		// no free rooms - can't order
 		if (availableRoomIds.isEmpty())
 			return null;
 		
@@ -96,6 +105,25 @@ protected MongoCollection<Order> orderCollection;
 		
 		hotelDao.addOrderToHotel(hotelId, orderId);
 		customerDao.addOrderToCustomer(customerId, orderId);
+		
+		return order;
+	}
+	
+	/**
+	 * Deletes order in order collections and relevant collections in hotel and custoemr
+	 * @param orderId
+	 * @return canceled order or NULL if no order was found
+	 */
+	public Order cancelOrder(ObjectId orderId) {
+		Order order = orderCollection.findOneAndDelete(Filters.eq("_id", orderId));
+		
+		if (order == null) return null;
+		
+		CustomerDao customerDao = new CustomerDao(connection);
+		HotelDao hotelDao = new HotelDao(connection);
+		
+		hotelDao.removeOrderFromHotel(order.getHotelId(), orderId);
+		customerDao.removeOrderFromCustomer(order.getCustomerId(), orderId);
 		
 		return order;
 	}

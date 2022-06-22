@@ -59,4 +59,12 @@ public class CustomerDao {
 		
 		return result.wasAcknowledged();
 	}
+	
+	public boolean removeOrderFromCustomer(ObjectId customerId, ObjectId orderId) {
+		Bson filter = Filters.eq("_id", customerId);
+		Bson update = Updates.pull("orders", orderId);
+		UpdateResult result = customerCollection.updateOne(filter, update);
+		
+		return result.wasAcknowledged();
+	}
 }
