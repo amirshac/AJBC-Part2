@@ -50,12 +50,12 @@ public class HotelDao {
 	}
 	
 	public boolean hasAvailableRoomAt(ObjectId hotelId, LocalDate date) {
-		List<ObjectId> availableRooms = availableRoomsByHotelAtDateRange(hotelId, date, date);
+		List<ObjectId> availableRooms = availableRoomsByHotelInDateRange(hotelId, date, date);
 		return !(availableRooms.isEmpty());		
 	}
 	
 	public boolean hasAvailableRoomAt(ObjectId hotelId, LocalDate startDate, LocalDate endDate) {
-		List<ObjectId> availableRooms = availableRoomsByHotelAtDateRange(hotelId, startDate, endDate);
+		List<ObjectId> availableRooms = availableRoomsByHotelInDateRange(hotelId, startDate, endDate);
 		return !(availableRooms.isEmpty());		
 	}
 	
@@ -66,7 +66,7 @@ public class HotelDao {
 	 * @param endDate
 	 * @return list of available rooms Ids
 	 */
-	public List<ObjectId> availableRoomsByHotelAtDateRange(ObjectId hotelId, LocalDate startDate, LocalDate endDate){
+	public List<ObjectId> availableRoomsByHotelInDateRange(ObjectId hotelId, LocalDate startDate, LocalDate endDate){
 		List<ObjectId> availableRooms = new ArrayList<ObjectId>();
 		
 		Hotel hotel = findHotelById(hotelId);

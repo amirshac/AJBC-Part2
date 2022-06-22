@@ -27,28 +27,28 @@ import hotel.models.Room;
 import hotel.utils.MongoDBConnection;
 
 public class OrderDao {
-	
-protected MongoDBConnection connection;
-protected MongoCollection<Order> orderCollection;
-protected MongoCollection<Document> orderDocumentCollection;
+
+	protected MongoDBConnection connection;
+	protected MongoCollection<Order> orderCollection;
+	protected MongoCollection<Document> orderDocumentCollection;
 
 	public OrderDao(MongoDBConnection connection) {
 		this.connection = connection;
 		orderCollection = connection.getDataBase().getCollection("order", Order.class);
 		orderDocumentCollection = connection.getDataBase().getCollection("order");
 	}
-	
+
 	public Order findOrderById(ObjectId id) {
 		return orderCollection.find(Filters.eq("_id", id)).first();
 	}
-	
+
 	public Order findOrderById(String orderIdString) {
 		return findOrderById(new ObjectId(orderIdString));
 	}
-	
-	
+
 	/**
 	 * Checks if there's orders under a specific room that overlaps a date range
+	 * 
 	 * @param id
 	 * @param startDate
 	 * @param endDate
@@ -62,16 +62,17 @@ protected MongoCollection<Document> orderDocumentCollection;
 		Bson filter = Filters.or(datefilter1, datefilter2, datefilter3);
 		filter = Filters.and(filter, roomFilter);
 		List<Order> result = orderCollection.find(filter).into(new ArrayList<Order>());
-		
+
 		return result;
 	}
-	
-	public List<Order> findOrdersByRoomInDateRange(String id, LocalDate startDate, LocalDate endDate){
+
+	public List<Order> findOrdersByRoomInDateRange(String id, LocalDate startDate, LocalDate endDate) {
 		return findOrdersByRoomInDateRange(new ObjectId(id), startDate, endDate);
 	}
 
 	/**
 	 * Create new order for hotel and updates relevant database collections
+	 * 
 	 * @param hotelId
 	 * @param customerId
 	 * @param startDate
@@ -82,80 +83,86 @@ protected MongoCollection<Document> orderDocumentCollection;
 		CustomerDao customerDao = new CustomerDao(connection);
 		HotelDao hotelDao = new HotelDao(connection);
 		RoomDao roomDao = new RoomDao(connection);
-		
+
 		Order order = null;
-		
+
 		LocalDate endDate = startDate.plusDays(nights);
-		
+
 		Hotel hotel = hotelDao.findHotelById(hotelId);
-		
+
 		Customer customer = customerDao.findCustomerById(customerId);
-		
+
 		// get available room ids
-		List<ObjectId> availableRoomIds = hotelDao.availableRoomsByHotelAtDateRange(hotelId, startDate, endDate);
-		
+		List<ObjectId> availableRoomIds = hotelDao.availableRoomsByHotelInDateRange(hotelId, startDate, endDate);
+
 		// no free rooms - can't order
 		if (availableRoomIds.isEmpty())
 			return null;
-		
+
 		// pick free room
-		ObjectId freeRoomId = availableRoomIds.get(0);	
-		
+		ObjectId freeRoomId = availableRoomIds.get(0);
+
 		Room room = roomDao.findRoomById(freeRoomId);
-		
-		if ((room == null) || (hotel == null) || (customer == null)) return null;
-		
+
+		if ((room == null) || (hotel == null) || (customer == null))
+			return null;
+
 		float totalPrice = nights * hotel.getPricePerNight();
-		
+
 		LocalDate orderDate = LocalDate.now();
-		
+
 		order = new Order(hotelId, freeRoomId, customerId, orderDate, startDate, nights, totalPrice);
 		ObjectId orderId = order.getId();
-		
-		// insert new order to database and update objectId references in hotel and customer collections
+
+		// insert new order to database and update objectId references in hotel and
+		// customer collections
 		InsertOneResult result = orderCollection.insertOne(order);
-		if (!result.wasAcknowledged()) return null;
-		
+		if (!result.wasAcknowledged())
+			return null;
+
 		hotelDao.addOrderToHotel(hotelId, orderId);
 		customerDao.addOrderToCustomer(customerId, orderId);
-		
+
 		return order;
 	}
-	
+
 	/**
-	 * Deletes order in order collections and relevant collections in hotel and custoemr
+	 * Deletes order in order collections and relevant collections in hotel and
+	 * custoemr
+	 * 
 	 * @param orderId
 	 * @return canceled order or NULL if no order was found
 	 */
 	public Order cancelOrder(ObjectId orderId) {
 		Order order = orderCollection.findOneAndDelete(Filters.eq("_id", orderId));
-		
-		if (order == null) return null;
-		
+
+		if (order == null)
+			return null;
+
 		CustomerDao customerDao = new CustomerDao(connection);
 		HotelDao hotelDao = new HotelDao(connection);
-		
+
 		hotelDao.removeOrderFromHotel(order.getHotelId(), orderId);
 		customerDao.removeOrderFromCustomer(order.getCustomerId(), orderId);
-		
+
 		return order;
 	}
-	
-	public void sortHotelsByTotalIncomeFromOrders() {		
+
+	public void sortHotelsByTotalIncomeFromOrders() {
 		List<Document> result = null;
 		Bson group = Aggregates.group("$hotel_id", Accumulators.sum("totalPrice", "$total_price"));
 		Bson sort = sort(Sorts.descending("totalPrice"));
-		
-		result = orderDocumentCollection.aggregate(Arrays.asList(group, sort)).into(new ArrayList<>()); 
-		
+
+		result = orderDocumentCollection.aggregate(Arrays.asList(group, sort)).into(new ArrayList<>());
+
 		result.forEach(doc -> System.out.println(doc.toJson(JsonWriterSettings.builder().indent(true).build())));
 	}
-	
+
 	public void totalPricesInOrders() {
 		List<Document> result = null;
 		Bson group = Aggregates.group(null, Accumulators.sum("totalSumFromOrders", "$total_price"));
 		result = orderDocumentCollection.aggregate(Arrays.asList(group)).into(new ArrayList<>());
-		
+
 		result.forEach(doc -> System.out.println(doc.toJson(JsonWriterSettings.builder().indent(true).build())));
 
 	}

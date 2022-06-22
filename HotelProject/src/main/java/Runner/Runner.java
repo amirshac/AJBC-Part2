@@ -29,27 +29,8 @@ public class Runner {
 		customerDao = new CustomerDao(connection);
 		orderDao = new OrderDao(connection);
 	}
-	
-	public static void testFindHotelByCityName() {		
-		Hotel hotel;
-		hotel = hotelDao.findByCityName("Higueruela"); 
-		System.out.println(hotel);
-		
-		hotel = hotelDao.findByCityName("Tel-Aviv");
-		System.out.println(hotel);
-	}
-	
-	public static void testFindOrdersOfCustomer() {
-		List<Order> orders = customerDao.findOrdersOfCustomer("62b1ea87345a2860707718d1");
-		System.out.println(orders);
-	}
-	
-	public static void testHasAvailableRoom() {
-		Boolean result = hotelDao.hasAvailableRoomAt(new ObjectId("62b1e395c5ae613f0133e12a"), LocalDate.of(2022, 10, 10));
-		System.out.println("has available room " + result);
 
-	}
-	
+	// ------------tests---------------------------
 	public static void testHasOrdersByRoom() {
 		List<Order> result = orderDao.findOrdersByRoomInDateRange
 				("62b1ea86345a2860707718c6",LocalDate.of(2022, 9, 6), LocalDate.of(2022, 9, 6));
@@ -57,14 +38,39 @@ public class Runner {
 	}
 	
 	public static void testAvailableRoomsByHotelAtDateRange() {
-		List<ObjectId> result = hotelDao.availableRoomsByHotelAtDateRange
+		List<ObjectId> result = hotelDao.availableRoomsByHotelInDateRange
 				(new ObjectId("62b1e395c5ae613f0133e12a"),LocalDate.of(2022, 9, 1), LocalDate.of(2022, 9, 6));
 		System.out.println(result);
+	}
+	//--------------------------------------
+	
+	// Question 1
+	public static void showFindOrdersOfCustomer() {
+		List<Order> orders = customerDao.findOrdersOfCustomer("62b1ea87345a2860707718d1");
+		System.out.println(orders);
+	}
+
+	// Question 2
+	public static void testFindHotelByCityName() {		
+		Hotel hotel;
+		hotel = hotelDao.findByCityName("Higueruela"); 
+		System.out.println(hotel);
 		
+		hotel = hotelDao.findByCityName("Tel-Aviv");
+		System.out.println(hotel);
+		
+		hotel = hotelDao.findByCityName("nothing");
+		System.out.println(hotel);
 	}
 	
-	public static void testCreateOrder() {
-		
+	// Question 3
+	public static void showHasAvailableRoomAtDate() {
+		Boolean result = hotelDao.hasAvailableRoomAt(new ObjectId("62b1e395c5ae613f0133e12a"), LocalDate.of(2022, 10, 10));
+		System.out.println("has available room " + result);
+	}
+	
+	// Question 4
+	public static void showCreateOrder() {
 		ObjectId hotelId = new ObjectId("62b1e395c5ae613f0133e12a");
 		ObjectId customerId = new ObjectId("62b1ea87345a2860707718d1");
 		LocalDate startDate = LocalDate.of(2022, 10, 10);
@@ -78,7 +84,8 @@ public class Runner {
 			System.out.println("no free room in hotel to make order");
 	}
 	
-	public static void testCancelOrder() {
+	// Question 5
+	public static void showCancelOrder() {
 		ObjectId orderId = new ObjectId("62b2f61e7d6eb5238b83041b");
 		
 		Order order = orderDao.cancelOrder(orderId);
@@ -109,20 +116,25 @@ public class Runner {
 		//SeedDB.seedRooms(connection);
 		//SeedDB.seedCustomers(connection);
 		//SeedDB.seedOrders(connection);
+			
+		// Question 1
+		//showFindOrdersOfCustomer();
 		
-		//testFindHotelByCityName();
-		//testFindOrdersOfCustomer();
+		// Question 2
+		//showFindHotelByCityName();
 		
-		//testHasOrdersByRoom();
-		
-		//testAvailableRoomsByHotelAtDateRange();
-		//testHasAvailableRoom();
+		// Question 3
+		//showHasAvailableRoomAtDate();
 
-		//testCreateOrder();
-		//testCancelOrder();
+		// Question 4
+		//showCreateOrder();
+
+		// Question 5
+		//showCancelOrder();
 		
-		testSortHotelsByTotalIncomeFromOrders();
-		testTotalPricesInOrders();
+		
+		//testSortHotelsByTotalIncomeFromOrders();
+		//testTotalPricesInOrders();
 		connection.close();
 	}
 }
