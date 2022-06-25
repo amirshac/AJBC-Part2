@@ -98,14 +98,14 @@ public class Runner {
 	// Question 6
 	public static void showSortHotelsByTotalIncomeFromOrders() {
 		System.out.println("Sorting hotels by total income from orders");
-		orderDao.sortHotelsByTotalIncomeFromOrders();
+		orderDao.displaySortedHotelsByTotalIncomeFromOrders();
 		System.out.println("--------------------------------------------");
 	}
 	
 	// Question 7
 	public static void showTotalIncomeFromOrders() {
 		System.out.println("Total Income from all orders:");
-		orderDao.totalIncomeFromOrders();
+		orderDao.displayTotalIncomeFromOrders();
 		System.out.println("--------------------------------------------");
 	}
 
@@ -134,10 +134,12 @@ public class Runner {
 		//showCancelOrder();
 		
 		// Question 6
-		showSortHotelsByTotalIncomeFromOrders();
+		//showSortHotelsByTotalIncomeFromOrders();
 		
 		// Question 7
-		showTotalIncomeFromOrders();
+		//showTotalIncomeFromOrders();
+		
+		orderDao.testJoin();
 		
 		connection.close();
 	}

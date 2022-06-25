@@ -43,7 +43,7 @@ public class moviesRunner {
 		MongoCollection<Document> comments = connection.getDataBase().getCollection("comments");
 		
 		Bson join = Aggregates.lookup("movies", "movie_id", "_id", "movie_of_comment");
-		Bson filter = match(Filters.gte("date", dateFilter));
+	//	Bson filter = match(Filters.gte("date", dateFilter));
 		Bson limit = Aggregates.limit(1);
 		Bson project = Aggregates.project(fields( excludeId(), include("text"), include("title")));
 		//List<Document> results = comments.aggregate(Arrays.asList(join, limit, project)).into(new ArrayList<>());

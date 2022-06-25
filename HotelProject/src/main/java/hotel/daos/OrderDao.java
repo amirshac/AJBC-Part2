@@ -148,7 +148,7 @@ public class OrderDao {
 		return order;
 	}
 
-	public void sortHotelsByTotalIncomeFromOrders() {
+	public void displaySortedHotelsByTotalIncomeFromOrders() {
 		List<Document> result = null;
 		Bson group = Aggregates.group("$hotel_id", Accumulators.sum("hotel_income", "$total_price"));
 		Bson sort = sort(Sorts.descending("totalPrice"));
@@ -159,12 +159,27 @@ public class OrderDao {
 		result.forEach(doc -> System.out.println(doc.toJson(JsonWriterSettings.builder().indent(true).build())));
 	}
 
-	public void totalIncomeFromOrders() {
+	public void displayTotalIncomeFromOrders() {
 		List<Document> result = null;
 		Bson group = Aggregates.group(null, Accumulators.sum("total_income_from_orders", "$total_price"));
 		Bson project = project(fields(excludeId(), include("total_income_from_orders")));
 		result = orderDocumentCollection.aggregate(Arrays.asList(group, project)).into(new ArrayList<>());
 	
 		result.forEach(doc -> System.out.println(doc.toJson(JsonWriterSettings.builder().indent(true).build())));
+	}
+	
+	public void testJoin() {
+		List<Document> result = null;
+
+		Bson group = Aggregates.group("$hotel_id", Accumulators.sum("hotel_income", "$total_price"));
+		Bson sort = sort(Sorts.descending("totalPrice"));
+		Bson project = project(fields(excludeId(), include("joined._id", "joined.name", "hotel_income"),computed("hotel_id", "$_id")));
+		result = orderDocumentCollection.aggregate(Arrays.asList(group,project)).into(new ArrayList<>());
+
+		
+		Bson leftJoin = Aggregates.lookup("hotel", "hotel_id", "_id", "joined");
+		
+		
+		result.forEach(doc -> System.out.println("\n-------------\n" + doc.toJson(JsonWriterSettings.builder().indent(true).build())));
 	}
 }
