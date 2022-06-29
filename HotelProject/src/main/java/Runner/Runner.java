@@ -139,7 +139,6 @@ public class Runner {
 		// Question 7
 		//showTotalIncomeFromOrders();
 		
-		orderDao.testJoin();
 		
 		connection.close();
 	}
