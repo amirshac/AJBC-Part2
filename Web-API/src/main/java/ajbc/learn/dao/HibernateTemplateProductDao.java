@@ -13,7 +13,7 @@ import org.springframework.stereotype.Component;
 import ajbc.learn.models.Product;
 
 @SuppressWarnings("unchecked")
-@Component(value="htDao")
+@Component(value="htProductDao")
 public class HibernateTemplateProductDao implements ProductDao {
 	
 	@Autowired
@@ -96,6 +96,4 @@ public class HibernateTemplateProductDao implements ProductDao {
 		criteria.setProjection(Projections.rowCount());
 		return (long)template.findByCriteria(criteria).get(0);
 	}
-
-	
 }
